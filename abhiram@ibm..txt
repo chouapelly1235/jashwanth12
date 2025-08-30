@@ -1,0 +1,84 @@
+# This is a simple, console-based financial chatbot.
+# It uses a dictionary to store income and expense records.
+
+def show_menu():
+    """Displays the menu of available commands to the user."""
+    print("\n--- Financial Chatbot Menu ---")
+    print("1. Add Income")
+    print("2. Add Expense")
+    print("3. View Summary")
+    print("4. Exit")
+    print("------------------------------")
+
+def add_transaction(records, transaction_type):
+    """
+    Prompts the user for a transaction amount and description and adds it to the records.
+    
+    Args:
+        records (dict): The dictionary to store financial records.
+        transaction_type (str): 'income' or 'expense'.
+    """
+    try:
+        amount = float(input(f"Enter the amount for the {transaction_type}: 12"))
+        description = input(f"Enter a brief description for the {transaction_type}: ")
+        
+        # Initialize the list for the transaction type if it doesn't exist
+        if transaction_type not in records:
+            records[transaction_type] = []
+            
+        records[transaction_type].append({"amount": amount, "description": description})
+        print(f"Successfully added {transaction_type} of ${amount:.2f}.")
+        
+    except ValueError:
+        print("Invalid amount. Please enter a valid number.")
+
+def view_summary(records):
+    """
+    Calculates and displays the total income, total expenses, and current balance.
+    
+    Args:
+        records (dict): The dictionary containing financial records.
+    """
+    total_income = sum(item["amount"] for item in records.get("income", []))
+    total_expenses = sum(item["amount"] for item in records.get("expense", []))
+    balance = total_income - total_expenses
+    
+    print("\n--- Financial Summary ---")
+    print(f"Total Income: ${total_income:.2f}")
+    print(f"Total Expenses: ${total_expenses:.2f}")
+    print(f"Current Balance: ${balance:.2f}")
+    
+    # Optionally, show a breakdown of transactions
+    if records.get("income"):
+        print("\n--- Income Breakdown ---")
+        for i in records["income"]:
+            print(f"  - ${i['amount']:.2f}: {i['description']}")
+            
+    if records.get("expense"):
+        print("\n--- Expense Breakdown ---")
+        for i in records["expense"]:
+            print(f"  - ${i['amount']:.2f}: {i['description']}")
+
+def main():
+    """Main function to run the financial chatbot."""
+    # A simple dictionary to hold our financial data.
+    financial_records = {}
+    
+    while True:
+        show_menu()
+        choice = input("Enter your choice (1-4): ")
+        
+        if choice == '1':
+            add_transaction(financial_records, "income")
+        elif choice == '2':
+            add_transaction(financial_records, "expense")
+        elif choice == '3':
+            view_summary(financial_records)
+        elif choice == '4':
+            print("Thank you for using the financial chatbot. Goodbye!")
+            break
+        else:
+            print("Invalid choice. Please select a number from the menu.")
+
+if __name__ == "__main__":
+    main()
